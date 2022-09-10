@@ -84,4 +84,49 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     setClock('#timer', deadline);
+
+    // Modal
+
+    let more = document.querySelector('.more'),
+        overlay = document.querySelector('.overlay'),
+        close = document.querySelector('.popup-close'),
+        about = document.querySelector('#about');
+
+    about.addEventListener('click', (event) => {
+        if (
+            event.target.className === 'more' ||
+            event.target.className === 'description-btn'
+        ) {
+            document.body.style.overflow = 'hidden';
+            overlay.style.display = 'block';
+            this.classList.add('more-splash');
+        }
+    });
+
+    // more.addEventListener('click', function () {
+    //     overlay.style.display = 'block';
+    //     this.classList.add('more-splash');
+    //     document.body.style.overflow = 'hidden';
+    // });
+
+    close.addEventListener('click', function () {
+        overlay.style.display = 'none';
+        more.classList.remove('more-splash');
+        document.body.style.overflow = '';
+    });
+
+    // let age = document.getElementById('age');
+
+    // function showUser(surname, name) {
+    //     alert(
+    //         'Пользователь ' +
+    //             surname +
+    //             ' ' +
+    //             name +
+    //             ', его возраст ' +
+    //             this.value
+    //     );
+    // }
+
+    // showUser.apply(age, ['Горький', 'Максим']);
 });
