@@ -1,6 +1,8 @@
 window.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
+    // Tabs
+
     const info = document.querySelector('.info-header'),
         tab = document.querySelectorAll('.info-header-tab'),
         tabContent = document.querySelectorAll('.info-tabcontent');
@@ -21,8 +23,9 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    info.addEventListener('click', function (event) {
+    info.addEventListener('click', (event) => {
         let target = event.target;
+
         if (target && target.classList.contains('info-header-tab')) {
             for (let i = 0; i < tab.length; i++) {
                 if (target == tab[i]) {
@@ -62,13 +65,13 @@ window.addEventListener('DOMContentLoaded', function () {
         function updateClock() {
             let t = getTimeRemaining(endtime);
 
-            function addZero(num) {
+            let addZero = (num) => {
                 if (num <= 9) {
                     return '0' + num;
                 } else {
                     return num;
                 }
-            }
+            };
 
             hours.textContent = addZero(t.hours);
             minutes.textContent = addZero(t.minutes);
@@ -87,7 +90,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Modal
 
-    let more = document.querySelector('.more'),
+    const more = document.querySelector('.more'),
         overlay = document.querySelector('.overlay'),
         close = document.querySelector('.popup-close'),
         about = document.querySelector('#about');
@@ -109,24 +112,9 @@ window.addEventListener('DOMContentLoaded', function () {
     //     document.body.style.overflow = 'hidden';
     // });
 
-    close.addEventListener('click', function () {
+    close.addEventListener('click', () => {
         overlay.style.display = 'none';
         more.classList.remove('more-splash');
         document.body.style.overflow = '';
     });
-
-    // let age = document.getElementById('age');
-
-    // function showUser(surname, name) {
-    //     alert(
-    //         'Пользователь ' +
-    //             surname +
-    //             ' ' +
-    //             name +
-    //             ', его возраст ' +
-    //             this.value
-    //     );
-    // }
-
-    // showUser.apply(age, ['Горький', 'Максим']);
 });
