@@ -23,8 +23,8 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    info.addEventListener('click', (event) => {
-        let target = event.target;
+    info.addEventListener('click', (e) => {
+        let target = e.target;
 
         if (target && target.classList.contains('info-header-tab')) {
             for (let i = 0; i < tab.length; i++) {
@@ -95,10 +95,10 @@ window.addEventListener('DOMContentLoaded', function () {
         close = document.querySelector('.popup-close'),
         about = document.querySelector('#about');
 
-    about.addEventListener('click', (event) => {
+    about.addEventListener('click', (e) => {
         if (
-            event.target.className === 'more' ||
-            event.target.className === 'description-btn'
+            e.target.className === 'more' ||
+            e.target.className === 'description-btn'
         ) {
             document.body.style.overflow = 'hidden';
             overlay.style.display = 'block';
@@ -132,44 +132,63 @@ window.addEventListener('DOMContentLoaded', function () {
 
     statusMessage.classList.add('status');
 
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        form.appendChild(statusMessage);
+    function sendForm(elem) {
+        elem.addEventListener('submit', function (e) {
+            e.preventDefault();
+            elem.appendChild(statusMessage);
 
-        let request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
-        // request.setRequestHeader(
-        //     'Content-type',
-        //     'application/x-www-form-urlencoded'
-        // );
-        request.setRequestHeader(
-            'Content-type',
-            'application/json; charset=utf-8'
-        );
-
-        let formData = new FormData(form);
-
-        let obj = {};
-        formData.forEach(function (value, key) {
-            obj[key] = value;
-        });
-        let json = JSON.stringify(obj);
-
-        // request.send(formData);
-        request.send(json);
-
-        request.addEventListener('readystatechange', function () {
-            if (request.readyState < 4) {
-                statusMessage.innerHTML = message.loading;
-            } else if (request.readyState === 4 && request.status == 200) {
-                statusMessage.innerHTML = message.success;
-            } else {
-                statusMessage.innerHTML = message.failure;
+            let formData = new FormData(elem);
+            function jsonData(objFormData) {
+                let obj = {};
+                objFormData.forEach(function (value, key) {
+                    obj[key] = value;
+                });
+                return JSON.stringify(obj);
             }
-        });
+            let json = jsonData(formData);
 
-        for (let i = 0; i < input.length; i++) {
-            input[i].value = '';
-        }
-    });
+            function postData(data) {
+                return new Promise(function (resolve, reject) {
+                    let request = new XMLHttpRequest();
+                    request.open('POST', 'server.php');
+                    // request.setRequestHeader(
+                    //     'Content-type',
+                    //     'application/x-www-form-urlencoded'
+                    // );
+                    request.setRequestHeader(
+                        'Content-type',
+                        'application/json; charset=utf-8'
+                    );
+                    request.addEventListener('readystatechange', function () {
+                        if (request.readyState < 4) {
+                            resolve();
+                        } else if (
+                            request.readyState === 4 &&
+                            request.status == 200
+                        ) {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    });
+                    // request.send(formData);
+                    request.send(data);
+                });
+            } // End postData
+
+            function clearInput() {
+                for (let i = 0; i < input.length; i++) {
+                    input[i].value = '';
+                }
+            }
+
+            postData(json)
+                .then(() => (statusMessage.innerHTML = message.loading))
+                .then(() => (statusMessage.innerHTML = message.success))
+                .catch(() => (statusMessage.innerHTML = message.failure))
+                .then(clearInput);
+        });
+    }
+
+    sendForm(form);
 });
